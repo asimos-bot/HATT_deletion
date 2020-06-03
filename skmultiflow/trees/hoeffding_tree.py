@@ -508,7 +508,7 @@ class HoeffdingTree(BaseSKMObject, ClassifierMixin):
             self._attribute_observers = {}
 
         def learn_from_instance(self, X, y, weight, ht):
-            #print("entering ActiveLearningNode")
+            
             """ Update the node with the provided instance.
 
             Parameters
@@ -702,7 +702,7 @@ class HoeffdingTree(BaseSKMObject, ClassifierMixin):
             self._nb_correct_weight = 0.0
 
         def learn_from_instance(self, X, y, weight, ht):
-            #print("entering LearningNBAdaptive.learn_from_instance")
+            
             """ Update the node with the provided instance.
 
             Parameters
@@ -1170,7 +1170,7 @@ class HoeffdingTree(BaseSKMObject, ClassifierMixin):
 
     @staticmethod
     def compute_hoeffding_bound(range_val, confidence, n):
-        #print("entering SplitNode.compute_hoeffding_bound")
+        
         r""" Compute the Hoeffding bound, used to decide how many samples are necessary at each node.
 
         Notes

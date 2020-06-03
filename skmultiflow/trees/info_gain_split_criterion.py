@@ -23,7 +23,7 @@ class InfoGainSplitCriterion(SplitCriterion):
 
     @staticmethod
     def get_range_of_merit(pre_split_dist):
-        #print("entering InfoGainSplitCriterion.get_range_of_merit (to compute hoeffding bound)")
+        
         num_classes = len(pre_split_dist)
         num_classes = num_classes if num_classes > 2 else 2
         return np.log2(num_classes)
