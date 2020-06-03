@@ -273,7 +273,7 @@ class HATT(HoeffdingTree):
             self._nb_correct_weight = 0.0
 
         def learn_from_instance(self, X, y, weight, ht):
-            #print("entring learn_from_instance")
+            
             """ Update the node with the provided instance.
 
             Parameters
@@ -554,7 +554,7 @@ class HATT(HoeffdingTree):
 
     # Override partial_fit
     def partial_fit(self, X, y, classes=None, sample_weight=None):
-        #print("entering partial_fit")
+        
         """ Incrementally trains the model. Train samples (instances) are composed of X attributes and their
         corresponding targets y.
 
@@ -603,7 +603,7 @@ class HATT(HoeffdingTree):
 
     #  Override _partial_fit
     def _partial_fit(self, X, y, sample_weight):
-        #print("entering _partial_fit")
+        
         """ Trains the model on samples X and corresponding targets y.
 
         Private function where actual training is carried on.
@@ -630,7 +630,7 @@ class HATT(HoeffdingTree):
         self._process_nodes(X, y, sample_weight, self._tree_root, None, None)
 
     def _process_nodes(self, X, y, weight, node, parent, branch_index):
-        #print("entering _process_nodes")
+        
         """ Processing nodes from root to leaf where instance belongs.
 
         Private function.
@@ -699,7 +699,7 @@ class HATT(HoeffdingTree):
                 node.set_weight_seen_at_last_split_evaluation(weight_seen)
 
     def _sort_instance_into_leaf(self, X, y, weight):
-        #print("entring _sort_instance_into_leaf")
+        
         """ Sort an instance into a leaf.
 
         Private function where leaf learn from instance:
@@ -734,7 +734,7 @@ class HATT(HoeffdingTree):
             self.estimate_model_byte_size()
 
     def _reevaluate_best_split(self, node: AnyTimeSplitNode, parent, branch_index):
-        #print("entering _reevalute_best_split")
+        
         """ Reevaluate the best split for a node.
 
         If the samples seen so far are not from the same class then:
