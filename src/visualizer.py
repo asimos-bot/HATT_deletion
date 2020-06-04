@@ -1,5 +1,6 @@
 from plotter import Plotter
 from trainer import Trainer
+from tree import HATT_Forget
 import pandas as pd
 
 class Visualizer():
@@ -10,7 +11,7 @@ class Visualizer():
         labels = pd.read_csv(labels_filename)
         labels['y'] = labels['y'].astype('category')
 
-        self.plotter = Plotter(Trainer(data, labels))
+        self.plotter = Plotter(Trainer(data, labels, models = [HATT_Forget()], spacing = 100))
 
     def plot(self):
 
@@ -18,5 +19,5 @@ class Visualizer():
 
 if( __name__ == "__main__" ):
 
-    visual = Visualizer("../movingSquares.data", "../movingSquares.labels")
+    visual = Visualizer("../../movingSquares.data", "../../movingSquares.labels")
     visual.plot()

@@ -18,11 +18,5 @@ class DataProvider(ABC):
 
     @property
     @abstractmethod
-    def control_metrics(self):
+    def metrics(self):
         pass
-
-    @property
-    @abstractmethod
-    def deletion_metrics(self):
-        pass
-
