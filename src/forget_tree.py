@@ -2,12 +2,13 @@ from model import Model
 
 from skmultiflow.trees import HATT
 import numpy as np
-import random
 import math
+
+np.random.seed(0)
 
 class HATT_Forget(Model):
 
-    def __init__(self, forget_cache_size=1000, forget_percentage=0, bulk=False):
+    def __init__(self, forget_cache_size=100, forget_percentage=0, bulk=False):
         
         self.hatt = HATT()
 
@@ -28,13 +29,21 @@ class HATT_Forget(Model):
 
         n_samples = math.floor( X.shape[0] * self.forget_percentage )
 
-        if( isinstance(self.forget_cache, np.ndarray) ):
+        # cap n_samples to the max cache size
+        if( n_samples > self.forget_cache_size ):
 
-            n_samples = min( n_samples, self.forget_cache_size - self.forget_cache.shape[0] - X.shape[0] )
+            n_samples = self.forget_cache_size
+
+        if( isinstance(self.forget_cache, np.ndarray) ):
+           
+            # cap n_samples to the space left in the cache
+            if( n_samples + self.forget_cache.shape[0] > self.forget_cache_size ):
+
+                n_samples = self.forget_cache_size - self.forget_cache.shape[0]
 
         X = np.concatenate((X, Y), axis=1)
 
-        self.forget_cache = X if not isinstance(self.forget_cache, np.ndarray) else np.concatenate((self.forget_cache, X))
+        self.forget_cache = X[:n_samples] if not isinstance(self.forget_cache, np.ndarray) else np.concatenate((self.forget_cache, X[:n_samples]))
 
     def _forget(self):
 

@@ -11,7 +11,13 @@ class Visualizer():
         labels = pd.read_csv(labels_filename)
         labels['y'] = labels['y'].astype('category')
 
-        self.plotter = Plotter(Trainer(data, labels, models = [HATT_Forget(), HATT_Forget(forget_percentage=0.2)], window = 500))
+        models = [
+                HATT_Forget(),
+                HATT_Forget(forget_percentage=0.05),
+                HATT_Forget(forget_percentage=0.05, bulk=True)
+                ]
+
+        self.plotter = Plotter(Trainer(data, labels, models = models, window = 500))
 
     def plot(self):
 
