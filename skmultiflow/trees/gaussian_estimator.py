@@ -46,7 +46,7 @@ class GaussianEstimator(object):
         return self._mean
 
     def get_std_dev(self):
-        return math.sqrt(abs(self.get_variance()))
+        return math.sqrt(max(0, self.get_variance()))
 
     def get_variance(self):
         return self._variance_sum / (self._weight_sum - 1.0) if self._weight_sum > 1.0 else 0.0
