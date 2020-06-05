@@ -1,13 +1,10 @@
 from abc import ABC, abstractmethod
+from pandas import DataFrame
 
 class Model(ABC):
 
     @abstractmethod
-    def forget(self):
-        pass
-    
-    @abstractmethod
-    def train(self):
+    def train(self, X: DataFrame, Y: DataFrame):
         pass
 
     @property

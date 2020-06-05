@@ -3,11 +3,12 @@ from model import Model
 
 from typing import List
 import pandas as pd
+import numpy as np
 from skmultiflow.data import DataStream
 
 class Trainer(DataProvider):
 
-    def __init__(self, data: pd.DataFrame, labels: pd.DataFrame, models: List[Model], spacing: int = 100):
+    def __init__(self, data: pd.DataFrame, labels: pd.DataFrame, models: List[Model], window: int = 100):
 
         ##### MODEL
 
@@ -27,20 +28,21 @@ class Trainer(DataProvider):
 
         # spacing between each data point (we don't want to draw 200000 points!)
         # also allow us to take a bunch of samples at once to train
-        self.spacing = spacing
+        self.window = window
+
+        self.n_samples_to_consume = self.window
 
         #####
 
     def update(self):
 
         # if there aren't 'self.spacing' samples left, take all the samples left
-        n_samples_to_consume = self.spacing if self.spacing <= self.stream.n_remaining_samples() else self.stream.n_remaining_samples()
+        self.n_samples_to_consume = self.window if self.window <= self.stream.n_remaining_samples() else self.stream.n_remaining_samples()
 
-        x, y = self.stream.next_sample(n_samples_to_consume)
+        x, y = self.stream.next_sample(self.n_samples_to_consume)
 
         for model in self.models:
-            model.train(x, y)
-            model.forget()
+            model.train(x, np.expand_dims(y, axis=0).T)
 
     @property
     def has_more_samples(self):
@@ -50,7 +52,15 @@ class Trainer(DataProvider):
     @property
     def time_line(self):
 
-        return range( 0, self.num_samples - self.stream.n_remaining_samples(), self.spacing )
+        timeline = range( 0, self.num_samples - self.stream.n_remaining_samples(), self.window )
+
+        # if last chunk of samples consumed was less than a window long
+        # it means that 'range' won't give the last point (and the stream has ended)
+        if( self.n_samples_to_consume < self.window ):
+
+            timeline = list(timeline) + [ self.num_samples ]
+
+        return timeline
 
     @property
     def metrics(self):

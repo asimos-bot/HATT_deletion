@@ -1,6 +1,6 @@
 from plotter import Plotter
 from trainer import Trainer
-from tree import HATT_Forget
+from forget_tree import HATT_Forget
 import pandas as pd
 
 class Visualizer():
@@ -11,7 +11,7 @@ class Visualizer():
         labels = pd.read_csv(labels_filename)
         labels['y'] = labels['y'].astype('category')
 
-        self.plotter = Plotter(Trainer(data, labels, models = [HATT_Forget()], spacing = 100))
+        self.plotter = Plotter(Trainer(data, labels, models = [HATT_Forget(), HATT_Forget(forget_percentage=0.2)], window = 500))
 
     def plot(self):
 
