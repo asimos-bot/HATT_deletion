@@ -4,14 +4,19 @@ from skmultiflow.data import DataStream
 import pandas as pd
 from skmultiflow.trees import HATT
 
-data = pd.read_csv("../../movingSquares.data")
-labels = pd.read_csv("../../movingSquares.labels")
+data = pd.read_csv("../datasets/movingSquares.data")
+labels = pd.read_csv("../datasets/movingSquares.labels")
 labels['y'] = labels['y'].astype('category')
 
 stream = DataStream(data=data, y=labels)
 stream.prepare_for_use()
 
-evaluator = EvaluatePrequential(show_plot=True)
+evaluator = EvaluatePrequential(
+        show_plot=True,
+        metrics=[
+                'precision',
+                'accuracy'
+            ])
 
 models = [
         ForgetHATT(forget_percentage=0),

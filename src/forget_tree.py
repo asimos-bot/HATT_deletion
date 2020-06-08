@@ -12,7 +12,7 @@ np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    def __init__(self, forget_cache_size=1000, forget_percentage=0):
+    def __init__(self, forget_cache_size=500, forget_percentage=0):
 
         super().__init__()
 
