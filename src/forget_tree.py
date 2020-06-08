@@ -1,18 +1,20 @@
-from model import Model
+import skmultiflow
+if( skmultiflow.__version__ == '0.4.1' ):
+    from skmultiflow.trees import HATT as TreeClass
+else:
+    from skmultiflow.trees import ExtremelyFastDecisionTreeClassifier as TreeClass
 
-from skmultiflow.trees import HATT
+
 import numpy as np
 import math
 
 np.random.seed(0)
 
-class HATT_Forget(Model):
+class ForgetHATT(TreeClass):
 
     def __init__(self, forget_cache_size=100, forget_percentage=0, bulk=False):
-        
-        self.hatt = HATT()
 
-        self.mean_accuracies = []
+        super().__init__()
 
         # forget cache
         self.forget_cache = None
@@ -41,7 +43,7 @@ class HATT_Forget(Model):
 
                 n_samples = self.forget_cache_size - self.forget_cache.shape[0]
 
-        X = np.concatenate((X, Y), axis=1)
+        X = np.concatenate((X, np.expand_dims(Y, axis=0).T), axis=1)
 
         self.forget_cache = X[:n_samples] if not isinstance(self.forget_cache, np.ndarray) else np.concatenate((self.forget_cache, X[:n_samples]))
 
@@ -55,7 +57,7 @@ class HATT_Forget(Model):
                 X = self.forget_cache[:, :-1]
                 Y = self.forget_cache[:, -1]
 
-                self.hatt.partial_fit(X, Y.T, -1)
+                super().partial_fit(X, Y.T, -1)
 
                 self.forget_cache = None
         else:
@@ -70,7 +72,7 @@ class HATT_Forget(Model):
             X = self.forget_cache[to_forget, :-1]
             Y = self.forget_cache[to_forget, -1]
 
-            self.hatt.partial_fit(X, Y.T, -1)
+            super().partial_fit(X, Y.T, -1)
 
             # forget the selected rows
             np.delete(self.forget_cache, to_forget, axis=0)
@@ -82,15 +84,13 @@ class HATT_Forget(Model):
 
         if( isinstance(self.forget_cache, np.ndarray) ): self._forget()
 
-    def train(self, X: np.ndarray, Y: np.ndarray):
+    def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
 
         # train the model and get metrics based on its predicitons
-        self.hatt.partial_fit(X, Y.T[0], classes=["0", "1", "2", "3"])
+        super().partial_fit(X, y.T, classes, sample_weight)
 
-        if( self.forget_percentage != 0 ): self.forget(X, Y)
+        if( self.forget_percentage != 0 ): self.forget(X, y)
 
-        self.mean_accuracies.append( self.hatt.score(X, Y) )
+    def predict(self, X: np.ndarray):
 
-    @property
-    def metrics(self):
-        return self.mean_accuracies
+        return super().predict(X)
