@@ -16,13 +16,11 @@ evaluator = EvaluatePrequential(show_plot=True)
 models = [
         ForgetHATT(forget_percentage=0),
         ForgetHATT(forget_percentage=0.1),
-        ForgetHATT(forget_percentage=0.1, bulk = True)
         ]
 
 model_names = [
             'HATT',
             'HATT 0.1',
-            'HATT 0.1 bulk'
         ]
 
 evaluator.evaluate(stream=stream, model=models, model_names = model_names)

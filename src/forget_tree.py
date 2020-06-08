@@ -12,7 +12,7 @@ np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    def __init__(self, forget_cache_size=100, forget_percentage=0, bulk=False):
+    def __init__(self, forget_cache_size=1000, forget_percentage=0):
 
         super().__init__()
 
@@ -24,43 +24,25 @@ class ForgetHATT(TreeClass):
 
         self.forget_cache_size = max([forget_cache_size, 0])
 
-        # True for only deleting when deletion cache is full
-        self.bulk = bulk
+    def cache_is_full(self):
 
-    def _add_to_cache(self, X: np.ndarray, Y: np.ndarray):
+        return isinstance(self.forget_cache, np.ndarray) and self.forget_cache.shape[0] >= self.forget_cache_size
 
-        n_samples = math.floor( X.shape[0] * self.forget_percentage )
+    def _add_to_cache(self, X, Y):
+    
+        if( not self.cache_is_full() ):
 
-        # cap n_samples to the max cache size
-        if( n_samples > self.forget_cache_size ):
+            X = np.concatenate((X, np.expand_dims(Y, axis=0).T), axis=1)
 
-            n_samples = self.forget_cache_size
+            if( not isinstance(self.forget_cache, np.ndarray) ):
 
-        if( isinstance(self.forget_cache, np.ndarray) ):
-           
-            # cap n_samples to the space left in the cache
-            if( n_samples + self.forget_cache.shape[0] > self.forget_cache_size ):
+                self.forget_cache = X
 
-                n_samples = self.forget_cache_size - self.forget_cache.shape[0]
+            else:
 
-        X = np.concatenate((X, np.expand_dims(Y, axis=0).T), axis=1)
-
-        self.forget_cache = X[:n_samples] if not isinstance(self.forget_cache, np.ndarray) else np.concatenate((self.forget_cache, X[:n_samples]))
+                self.forget_cache = np.concatenate((self.forget_cache, X))
 
     def _forget(self):
-
-        # if bulk, only delete when cache is full
-        if( self.bulk ):
-
-            if( self.forget_cache_size == self.forget_cache.shape[0] ):
-
-                X = self.forget_cache[:, :-1]
-                Y = self.forget_cache[:, -1]
-
-                super().partial_fit(X, Y.T, -1)
-
-                self.forget_cache = None
-        else:
 
             # n of samples to forget
             n_samples = math.floor( self.forget_cache.shape[0] * self.forget_percentage )
@@ -72,24 +54,23 @@ class ForgetHATT(TreeClass):
             X = self.forget_cache[to_forget, :-1]
             Y = self.forget_cache[to_forget, -1]
 
-            super().partial_fit(X, Y.T, -1)
+            super(ForgetHATT, self).partial_fit(X, Y.T, -1)
 
             # forget the selected rows
             np.delete(self.forget_cache, to_forget, axis=0)
 
     def forget(self, X: np.ndarray, Y: np.ndarray):
 
-        # if cache size is not full, add some random samples
         self._add_to_cache(X, Y)
 
-        if( isinstance(self.forget_cache, np.ndarray) ): self._forget()
+        if( self.cache_is_full() ): self._forget()
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
 
         # train the model and get metrics based on its predicitons
         super().partial_fit(X, y.T, classes, sample_weight)
 
-        if( self.forget_percentage != 0 ): self.forget(X, y)
+        if( self.forget_percentage != 0.0 ): self.forget(X, y)
 
     def predict(self, X: np.ndarray):
 
