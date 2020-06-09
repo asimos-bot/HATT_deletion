@@ -12,7 +12,7 @@ np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    def __init__(self, forget_cache_size=500, forget_percentage=0):
+    def __init__(self, forget_cache_size=100, forget_percentage=0):
 
         super().__init__()
 
@@ -54,7 +54,7 @@ class ForgetHATT(TreeClass):
             X = self.forget_cache[to_forget, :-1]
             Y = self.forget_cache[to_forget, -1]
 
-            super(ForgetHATT, self).partial_fit(X, Y.T, -1)
+            super(ForgetHATT, self).partial_fit(X, Y.T, -1.0)
 
             # forget the selected rows
             np.delete(self.forget_cache, to_forget, axis=0)
