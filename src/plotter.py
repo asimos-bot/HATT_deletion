@@ -46,7 +46,7 @@ class Plotter():
 
             for field in fields:
 
-                l[field].append(row[field])
+                l[field].append(float(row[field]))
 
         return l
 
@@ -58,24 +58,22 @@ class Plotter():
 
         axes = plt.axes()
 
-        axes.yaxis.set_major_locator(plt.AutoLocator())
-        axes.xaxis.set_major_locator(plt.AutoLocator())
+        axes.yaxis.set_major_locator(plt.MaxNLocator(10))
+        axes.xaxis.set_major_locator(plt.MaxNLocator(5))
 
-        plt.gca().invert_yaxis()
-
-        for idx, field in enumerate([ key for key in l.keys() if key != x_axis_field ]):
+        for field in [ key for key in l.keys() if key != x_axis_field ]:
 
             plt.plot(l[x_axis_field], l[field], label = field)
 
         plt.ylabel('mean accuracy')
         plt.xlabel('number of objects given')
-        plt.legend()
+        plt.legend(loc=2)
         plt.show()
 
 if( __name__ == "__main__" ):
 
     import sys
     if( len(sys.argv) > 1 ):
-        Plotter(sys.argv[1]).plot_keyfields('id', ['mean'])
+        Plotter(sys.argv[1]).plot_keyfields('id', ['mean_acc_[HATT'])
     else:
         print("usage: plooter.py <path/to/log>")
