@@ -76,4 +76,4 @@ if( __name__ == "__main__" ):
     if( len(sys.argv) > 1 ):
         Plotter(sys.argv[1]).plot_keyfields('id', ['mean_acc_[HATT'])
     else:
-        print("usage: plooter.py <path/to/log>")
+        print("usage: plotter.py <path/to/log>")
