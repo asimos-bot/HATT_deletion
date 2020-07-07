@@ -26,7 +26,7 @@ class ForgetHATT(TreeClass):
 
         self.counter+=1
 
-        if( self.counter % self.interval ):
+        if( self.counter % self.interval == 0):
             self.counter=0
 
             x, y = self.forgetter.next_to_forget()
