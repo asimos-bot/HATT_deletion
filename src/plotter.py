@@ -50,7 +50,7 @@ class Plotter():
 
         return l
 
-    def plot_keyfields(self, x_axis_field, list_of_keywords):
+    def plot_keyfields(self, x_axis_field, list_of_keywords, ylabel='mean accuracy', xlabel='number of objects given'):
 
         l = self._get_field_lists(x_axis_field, list_of_keywords)
 
@@ -65,8 +65,8 @@ class Plotter():
 
             plt.plot(l[x_axis_field], l[field], label = field)
 
-        plt.ylabel('mean accuracy')
-        plt.xlabel('number of objects given')
+        plt.ylabel(ylabel)
+        plt.xlabel(xlabel)
         plt.legend(loc=2)
         plt.show()
 

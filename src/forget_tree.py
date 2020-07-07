@@ -7,12 +7,13 @@ else:
 import numpy as np
 import math
 import forgetter
+import csv
 
 np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    NodeCountArr = []
+    node_count_arr = []
 
     def __init__(self, data: str, label: str, forget_percentage: float, delimiter=","):
 
@@ -24,6 +25,34 @@ class ForgetHATT(TreeClass):
         if( forget_percentage != 0 ):
             self.interval = 1/forget_percentage
 
+    def get_mean_nodes(self, mean_size = 1000):
+        
+        media = []#Yaxis
+        x_axis = []
+
+        for i in range(0, len(node_count_arr), mean_size):
+            media.append(0)
+            x_axis.append(i + mean_size)
+        
+        for j in range(i, i + mean_size):
+            media[i // mean_size] = media[i // mean_size] + self.node_count_arr[j]
+            media[i // mean_size] = media[i // mean_size] / mean_size
+ 
+        media = [0] + media
+        x_axis = [0] + x_axis
+        return media, x_axis
+
+    def mean_nodes_to_csv(self, filepath: str, mean_size = 1000):
+
+        with open(filepath, "w") as f:
+
+            writer = csv.DictWriter(f, fieldnames=['x', 'mean number of nodes'])
+
+            writer.writeheader()
+            for mean, x in zip(self.get_mean_nodes(mean_size)):
+
+                writer.write({ 'x':x, 'mean': mean })
+
     def forget_policy(self, X: np.ndarray, Y: np.ndarray):
 
         self.counter+=1
@@ -34,9 +63,9 @@ class ForgetHATT(TreeClass):
             x, y = self.forgetter.next_to_forget()
             super().partial_fit(x, y, -1)
 
-    def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
+    def partial_fit(self, X: np.ndarray, y: np.ndarray):
 
-        if(sample_weight is not None and sample_weight > 0): self.NodeCountArr.append(self._tree_root.count_nodes()[1])
+        self.node_count_arr.append(self._tree_root.count_nodes()[1])
 
         # train the model and get metrics based on its predicitons
         super().partial_fit(X, y, classes, sample_weight)

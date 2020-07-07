@@ -39,3 +39,8 @@ model_names = [
         ]
 
 evaluator.evaluate(stream=stream, model=models, model_names = model_names)
+
+for i, model in enumerate(models):
+
+    model.mean_nodes_to_csv('mean_nodes' + str(i) + '.csv')
+
