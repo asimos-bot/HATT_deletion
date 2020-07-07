@@ -1,0 +1,10 @@
+# TEST CONFIGURATION BEGIN
+# DataStream(n_targets=-1, target_idx=1, cat_features=None, name=None)
+# [HATT 0%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 10%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 25%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 50%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 75%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# EvaluatePrequential(batch_size=1, data_points_for_classification=False, max_samples=100000, max_time=inf, metrics=['accuracy'], n_wait=200, output_file='log.log', pretrain_size=200, restart_stream=True, show_plot=True)
+# TEST CONFIGURATION END
+id,mean_acc_[HATT 0%],current_acc_[HATT 0%],mean_acc_[HATT 10%],current_acc_[HATT 10%],mean_acc_[HATT 25%],current_acc_[HATT 25%],mean_acc_[HATT 50%],current_acc_[HATT 50%],mean_acc_[HATT 75%],current_acc_[HATT 75%]

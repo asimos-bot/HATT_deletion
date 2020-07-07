@@ -12,24 +12,29 @@ np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    def __init__(self, forget_percentage=0):
+    def __init__(self, data: str, label: str, forget_percentage: float, delimiter=","):
 
         super().__init__()
 
-        self.forgetter = forgetter.Forgetter(forget_percentage)
-
         self.counter=0
+        self.forgetter = forgetter.Forgetter(data, label, forget_percentage, delimiter=delimiter)
 
-    def forget(self, X: np.ndarray, Y: np.ndarray):
+    def forget_policy(self, X: np.ndarray, Y: np.ndarray):
 
-        pass
+        self.counter+=1
+
+        if( self.counter % 100 ):
+            self.counter=0
+
+            x, y = self.forgetter.next_to_forget()
+            super().partial_fit(x, y, -1)
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
 
         # train the model and get metrics based on its predicitons
-        super().partial_fit(X, y.T, classes, sample_weight)
+        super().partial_fit(X, y, classes, sample_weight)
 
-        if( self.forget_percentage != 0.0 ): self.forget(X, y)
+        self.forget_policy(X, y)
 
     def predict(self, X: np.ndarray):
 

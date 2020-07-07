@@ -36,7 +36,7 @@ class Forgetter():
 
         if self.pointer < self.data.shape[0]:
 
-            data = self.data.iloc[self.pointer].to_numpy()
+            data = np.expand_dims(self.data.iloc[self.pointer].to_numpy(), axis=0)
             label = self.labels.iloc[self.pointer]
 
             if isinstance(label, np.int64):
