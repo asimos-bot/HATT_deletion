@@ -19,11 +19,14 @@ class ForgetHATT(TreeClass):
         self.counter=0
         self.forgetter = forgetter.Forgetter(data, label, forget_percentage, delimiter=delimiter)
 
+        if( forget_percentage != 0 ):
+            self.interval = 1/forget_percentage
+
     def forget_policy(self, X: np.ndarray, Y: np.ndarray):
 
         self.counter+=1
 
-        if( self.counter % 100 ):
+        if( self.counter % self.interval ):
             self.counter=0
 
             x, y = self.forgetter.next_to_forget()
@@ -34,7 +37,7 @@ class ForgetHATT(TreeClass):
         # train the model and get metrics based on its predicitons
         super().partial_fit(X, y, classes, sample_weight)
 
-        self.forget_policy(X, y)
+        if( self.forgetter.forget_percentage != 0 ): self.forget_policy(X, y)
 
     def predict(self, X: np.ndarray):
 

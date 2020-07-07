@@ -15,6 +15,8 @@ class Forgetter():
 
         self.pointer=0
 
+        self.forget_percentage = forget_percentage
+
     def _objs_to_forget(self, data : pd.DataFrame, labels: pd.DataFrame, forget_percentage: float):
  
         self._set_label_as_category(labels)
