@@ -12,6 +12,8 @@ np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
+    NodeCountArr = []
+
     def __init__(self, data: str, label: str, forget_percentage: float, delimiter=","):
 
         super().__init__()
@@ -33,6 +35,8 @@ class ForgetHATT(TreeClass):
             super().partial_fit(x, y, -1)
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
+
+        if(sample_weight is not None and sample_weight > 0): self.NodeCountArr.append(self._tree_root.count_nodes()[1])
 
         # train the model and get metrics based on its predicitons
         super().partial_fit(X, y, classes, sample_weight)
