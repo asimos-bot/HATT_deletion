@@ -22,10 +22,7 @@ class ForgetHATT(TreeClass):
 
     def forget(self, X: np.ndarray, Y: np.ndarray):
 
-        self.counter+=1
-
-        if( self.counter % 1000 == 0 ):
-            data, label = self.forget()
+        pass
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
 
