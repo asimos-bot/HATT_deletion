@@ -19,7 +19,9 @@ dataset.
 
 So, to every possible split we do the following calculation:
 
-Gain = 1 - Esplit
+Gain = Ecurrent\_entropy - Esplit
+
+Where Ecurrent\_entropy is the entropy of the current dataset (without split)
 
 Where Esplit is the entropy of the split, calculate by:
 

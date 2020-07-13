@@ -4,73 +4,75 @@ if( skmultiflow.__version__ == '0.4.1' ):
 else:
     from skmultiflow.trees import ExtremelyFastDecisionTreeClassifier as TreeClass
 
-
 import numpy as np
 import math
+import forgetter
+import csv
 
 np.random.seed(0)
 
 class ForgetHATT(TreeClass):
 
-    def __init__(self, forget_cache_size=100, forget_percentage=0):
+
+    def __init__(self, data: str, label: str, forget_percentage: float, delimiter=","):
 
         super().__init__()
 
-        # forget cache
-        self.forget_cache = None
+        self.node_count_arr = []
+        self.counter=0
+        self.forgetter = forgetter.Forgetter(data, label, forget_percentage, delimiter=delimiter)
 
-        # can't go above 1, can't go below 0
-        self.forget_percentage = min(1, max(forget_percentage, 0))
+        if( forget_percentage != 0 ):
+            self.interval = 1/forget_percentage
 
-        self.forget_cache_size = max([forget_cache_size, 0])
+    def get_mean_nodes(self, mean_size = 1000):
+        
+        media = []#Yaxis
+        x_axis = []
 
-    def cache_is_full(self):
+        for i in range(0, len(self.node_count_arr), mean_size):
 
-        return isinstance(self.forget_cache, np.ndarray) and self.forget_cache.shape[0] >= self.forget_cache_size
+            x_axis.append(i + mean_size)
 
-    def _add_to_cache(self, X, Y):
-    
-        if( not self.cache_is_full() ):
+            media.append( sum([ self.node_count_arr[j] for j in filter( lambda x: x < len(self.node_count_arr), range(i, i + mean_size)) ]) / mean_size )
 
-            X = np.concatenate((X, np.expand_dims(Y, axis=0).T), axis=1)
+        media = [0] + media
+        x_axis = [0] + x_axis
 
-            if( not isinstance(self.forget_cache, np.ndarray) ):
+        return media, x_axis
 
-                self.forget_cache = X
+    def mean_nodes_to_csv(self, filepath: str, mean_size = 1000):
 
-            else:
+        with open(filepath, "w") as f:
 
-                self.forget_cache = np.concatenate((self.forget_cache, X))
+            writer = csv.DictWriter(f, fieldnames=['x', 'mean'])
 
-    def _forget(self):
+            writer.writeheader()
 
-            # n of samples to forget
-            n_samples = math.floor( self.forget_cache.shape[0] * self.forget_percentage )
+            media, x_axis = self.get_mean_nodes(mean_size)
 
-            # get idx of rows to forget
-            to_forget = np.random.choice(self.forget_cache.shape[0], n_samples, replace=False)
+            for mean, x in zip(media, x_axis):
 
-            # divide rows in X and Y
-            X = self.forget_cache[to_forget, :-1]
-            Y = self.forget_cache[to_forget, -1]
+                writer.writerow({ 'x':x, 'mean': mean })
 
-            super(ForgetHATT, self).partial_fit(X, Y.T, -1.0)
+    def forget_policy(self, X: np.ndarray, Y: np.ndarray):
 
-            # forget the selected rows
-            np.delete(self.forget_cache, to_forget, axis=0)
+        self.counter+=1
 
-    def forget(self, X: np.ndarray, Y: np.ndarray):
+        if( self.counter % self.interval == 0):
+            self.counter=0
 
-        self._add_to_cache(X, Y)
-
-        if( self.cache_is_full() ): self._forget()
+            x, y = self.forgetter.next_to_forget()
+            super().partial_fit(x, y, -1)
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
 
         # train the model and get metrics based on its predicitons
-        super().partial_fit(X, y.T, classes, sample_weight)
+        super().partial_fit(X, y, classes, sample_weight)
 
-        if( self.forget_percentage != 0.0 ): self.forget(X, y)
+        self.node_count_arr.append(self._tree_root.count_nodes()[1])
+
+        if( self.forgetter.forget_percentage != 0 ): self.forget_policy(X, y)
 
     def predict(self, X: np.ndarray):
 

@@ -1,12 +1,19 @@
 # TEST CONFIGURATION BEGIN
 # DataStream(n_targets=-1, target_idx=1, cat_features=None, name=None)
-# [HATT 0%] ForgetHATT(forget_cache_size=100, forget_percentage=0)
-# [HATT 10%] ForgetHATT(forget_cache_size=100, forget_percentage=0.1)
-# [HATT 25%] ForgetHATT(forget_cache_size=100, forget_percentage=0.25)
-# [HATT 50%] ForgetHATT(forget_cache_size=100, forget_percentage=0.5)
-# [HATT 75%] ForgetHATT(forget_cache_size=100, forget_percentage=0.75)
-# EvaluatePrequential(batch_size=1, data_points_for_classification=False, max_samples=100000, max_time=inf, metrics=['accuracy'], n_wait=200, output_file='log.log', pretrain_size=200, restart_stream=True, show_plot=True)
+# [HATT 0%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 10%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 25%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 50%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# [HATT 75%] ForgetHATT(data=None, delimiter=None, forget_percentage=None, label=None)
+# EvaluatePrequential(batch_size=1, data_points_for_classification=False, max_samples=100000, max_time=60, metrics=['accuracy'], n_wait=200, output_file='log.log', pretrain_size=200, restart_stream=True, show_plot=False)
 # TEST CONFIGURATION END
 id,mean_acc_[HATT 0%],current_acc_[HATT 0%],mean_acc_[HATT 10%],current_acc_[HATT 10%],mean_acc_[HATT 25%],current_acc_[HATT 25%],mean_acc_[HATT 50%],current_acc_[HATT 50%],mean_acc_[HATT 75%],current_acc_[HATT 75%]
 200,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000
-399,0.990000,0.990000,0.975000,0.975000,0.975000,0.975000,0.970000,0.970000,0.970000,0.970000
+399,0.990000,0.990000,0.980000,0.980000,0.995000,0.995000,0.985000,0.985000,0.990000,0.990000
+599,0.987500,0.985000,0.980000,0.980000,0.987500,0.980000,0.975000,0.965000,0.987500,0.985000
+799,0.988333,0.990000,0.983333,0.990000,0.930000,0.815000,0.905000,0.765000,0.988333,0.990000
+999,0.988750,0.990000,0.987500,1.000000,0.945000,0.990000,0.912500,0.935000,0.988750,0.990000
+1199,0.826000,0.175000,0.826000,0.180000,0.791000,0.175000,0.788000,0.290000,0.826000,0.175000
+1399,0.723333,0.210000,0.719167,0.185000,0.694167,0.210000,0.701667,0.270000,0.723333,0.210000
+1599,0.655714,0.250000,0.641429,0.175000,0.619286,0.170000,0.650000,0.340000,0.655714,0.250000
+1799,0.604375,0.245000,0.588125,0.215000,0.565000,0.185000,0.608750,0.320000,0.604375,0.245000
