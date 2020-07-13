@@ -17,10 +17,11 @@ stream.prepare_for_use()
 
 evaluator = EvaluatePrequential(
         output_file="log.log",
-        show_plot=True,
+        show_plot=False,
         metrics=[
                 'accuracy'
-            ])
+            ],
+        max_time=60)
 
 models = [
         ForgetHATT(data_filepath, labels_filepath, forget_percentage=0, delimiter=" "),
