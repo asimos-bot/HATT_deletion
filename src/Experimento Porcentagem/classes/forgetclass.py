@@ -16,8 +16,9 @@ class HATTForget:
         self.labelsPath = labelsPath
         self.forgetPercentage = forgetPercentage
         self.method = method
+    #nao usada, serve pra anotar quantos labels diferentes entram em uma janela e suas metricas de avaliacao
     labelsArray = []
-
+    
     def __PickData(HATTForget):
         try:
             if(HATTForget.dataPath is None):
@@ -48,7 +49,7 @@ class HATTForget:
             print(e)
             print("Ocorreu um erro(PrepareSream)")
 
-
+    #nao usado
     def __addLabel(HATTForget, labelName):
         try:
             NewLabel = label(labelName)
@@ -57,6 +58,7 @@ class HATTForget:
             print(e)
             print("Ocorreu um erro(__addLabel)")
 
+    #nao usado
     def __NextSample(HATTForget, stream):
         X, y = stream.next_sample()
         labelExist = False
@@ -72,7 +74,7 @@ class HATTForget:
         size = int(size)
         print(HATTForget.name," treinando com ", size)
         for i in range(size):
-            X, y = HATTForget.__NextSample(HATTForget.stream)
+            X, y = HATTForget.stream.next_sample()
             HATTForget.method.partial_fit(X, y)
 
 
@@ -88,15 +90,14 @@ class HATTForget:
         return(HATTForget.method.score(X, y))
 
 
-
-
+    #o esquecimento deve ser no dataset especifico daquela arvore
     def Forget(HATTForget, size, begin):
-        size = 0
+        size = int(size)
         begin = int(begin)
-        ForgetStream = DataStream(HATTForget.data, y=HATTForget.labels)
-        ForgetStream.prepare_for_use()
+        #ForgetStream = DataStream(HATTForget.data, y=HATTForget.labels)
+        #ForgetStream.prepare_for_use()
         print(HATTForget.name, " esta esquecendo: ", size*HATTForget.forgetPercentage)
-        for i in range(int(size*HATTForget.forgetPercentage)):
-            if (begin != 0): ForgetStream.next_sample(begin)
-            X, y = ForgetStream.next_sample()
-            HATTForget.method.partial_fit(X, y, -1)
+        #for i in range(int(size*HATTForget.forgetPercentage)):
+        #    if (begin != 0): ForgetStream.next_sample(begin)
+        #    X, y = ForgetStream.next_sample()
+        #    HATTForget.method.partial_fit(X, y, -1)
