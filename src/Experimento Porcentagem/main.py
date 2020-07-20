@@ -1,5 +1,5 @@
 import copy
-
+from datasetsGenerator import setsGenerator
 from classes.forgetclass import HATTForget
 #tamanho total do set a ser lido
 size = 1000
@@ -7,6 +7,7 @@ size = 1000
 percentage = 0.1
 #as porcentagens de esquecimento do experimento
 forgetParams = [0.1, 0.25, 0.5, 0.75]
+setsGenerator(forgetArrays = forgetParams, datasetSize = size, datasetPercentage = percentage)
 
 #gerando o inicio do csv
 exitLabels = ["main"] + forgetParams

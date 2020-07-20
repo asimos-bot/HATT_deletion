@@ -19,7 +19,7 @@ class HATTForget:
         self.method = method
     #nao usada, serve pra anotar quantos labels diferentes entram em uma janela e suas metricas de avaliacao
     labelsArray = []
-    
+
     def __PickData(HATTForget):
         try:
             if(HATTForget.dataPath is None):
