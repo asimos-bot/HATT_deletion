@@ -18,7 +18,7 @@ class HATTForget:
         self.method = method
     #nao usada, serve pra anotar quantos labels diferentes entram em uma janela e suas metricas de avaliacao
     labelsArray = []
-    
+
     def __PickData(HATTForget):
         try:
             if(HATTForget.dataPath is None):
@@ -94,10 +94,11 @@ class HATTForget:
     def Forget(HATTForget, size, begin):
         size = int(size)
         begin = int(begin)
-        #ForgetStream = DataStream(HATTForget.data, y=HATTForget.labels)
-        #ForgetStream.prepare_for_use()
+        ForgetStream = DataStream(pd.read_csv("forgetDatasets/" + str(HATTForget.name)[2:] + ".data"), y=pd.read_csv("forgetDatasets/" + str(HATTForget.name)[2:] + ".labels"))
+        ForgetStream.prepare_for_use()
         print(HATTForget.name, " esta esquecendo: ", size*HATTForget.forgetPercentage)
-        #for i in range(int(size*HATTForget.forgetPercentage)):
-        #    if (begin != 0): ForgetStream.next_sample(begin)
-        #    X, y = ForgetStream.next_sample()
-        #    HATTForget.method.partial_fit(X, y, -1)
+        if (begin != 0): ForgetStream.next_sample(int(begin * HATTForget.forgetPercentage))
+        for i in range(int(size*HATTForget.forgetPercentage)):
+            X, y = ForgetStream.next_sample()
+            if(str(HATTForget.name) == "0.1"):print(X,y)
+            #    HATTForget.method.partial_fit(X, y, -1)
