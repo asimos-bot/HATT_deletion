@@ -14,8 +14,8 @@ def setsGenerator(forgetArrays, datasetSize, datasetPercentage):
     data.close()
     labels.close()
     for i in forgetArrays:
-        data = open("forgetDatasets/" + str(i)[2:] + ".data", "w")
-        labels = open("forgetDatasets/" + str(i)[2:] + ".labels", "w")
+        data = open("forgetDatasets/" + str(i) + ".data", "w")
+        labels = open("forgetDatasets/" + str(i) + ".labels", "w")
         data.write("a,b\n")
         labels.write("y\n")
         data.close()
@@ -30,8 +30,8 @@ def setsGenerator(forgetArrays, datasetSize, datasetPercentage):
                 subDataArr.pop(pop)
                 subLabelsArr.pop(pop)
 
-            data = open("forgetDatasets/" + str(j)[2:] + ".data", "a")
-            labels = open("forgetDatasets/" + str(j)[2:] + ".labels", "a")
+            data = open("forgetDatasets/" + str(j) + ".data", "a")
+            labels = open("forgetDatasets/" + str(j) + ".labels", "a")
             for i in range(len(subDataArr)):
                 data.write(subDataArr[i])
                 labels.write(subLabelsArr[i])
