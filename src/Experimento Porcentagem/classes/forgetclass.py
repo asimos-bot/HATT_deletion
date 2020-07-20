@@ -1,4 +1,5 @@
 import skmultiflow
+import numpy as np
 
 if( skmultiflow.__version__ == '0.4.1' ):
     from skmultiflow.trees import HATT as TreeClass
@@ -27,6 +28,8 @@ class HATTForget:
             #caso o labels esteja descrito em um csv separado
             if(HATTForget.labelsPath is not None):
                 HATTForget.labels = pd.read_csv(HATTForget.labelsPath)
+                for label in HATTForget.labels.columns.values:
+                    HATTForget.labels[label] = HATTForget.labels[label].astype('category')
                 HATTForget.data = pd.read_csv(HATTForget.dataPath)
             else:
                 #caso o labels esteja no data
@@ -87,17 +90,19 @@ class HATTForget:
         TestStream.prepare_for_use()
         if (begin != 0): TestStream.next_sample(begin)
         X, y = TestStream.next_sample((size))
-        return(HATTForget.method.score(X, y))
+        y = np.expand_dims(y, axis=0).T
 
+        return(HATTForget.method.score(X, y))
 
     #o esquecimento deve ser no dataset especifico daquela arvore
     def Forget(HATTForget, size, begin):
         size = int(size)
         begin = int(begin)
-        #ForgetStream = DataStream(HATTForget.data, y=HATTForget.labels)
-        #ForgetStream.prepare_for_use()
+        ForgetStream = DataStream(HATTForget.data, y=HATTForget.labels)
+        ForgetStream.prepare_for_use()
         print(HATTForget.name, " esta esquecendo: ", size*HATTForget.forgetPercentage)
-        #for i in range(int(size*HATTForget.forgetPercentage)):
-        #    if (begin != 0): ForgetStream.next_sample(begin)
-        #    X, y = ForgetStream.next_sample()
-        #    HATTForget.method.partial_fit(X, y, -1)
+        for i in range(int(size*HATTForget.forgetPercentage)):
+            if (begin != 0): ForgetStream.next_sample(begin)
+            X, y = ForgetStream.next_sample()
+
+            HATTForget.method.partial_fit(X, y, sample_weight=np.full(y.shape, -1))

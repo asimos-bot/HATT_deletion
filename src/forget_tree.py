@@ -63,6 +63,9 @@ class ForgetHATT(TreeClass):
             self.counter=0
 
             x, y = self.forgetter.next_to_forget()
+
+            print(x)
+            print(y)
             super().partial_fit(x, y, -1)
 
     def partial_fit(self, X: np.ndarray, y: np.ndarray, classes=None, sample_weight=None):
